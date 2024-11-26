@@ -1,0 +1,5 @@
+[
+    {"id": "1", "user": "Alice", "message": "Hello, how are you?", "timestamp": "2024-11-26T10:00:00"},
+    {"id": "2", "user": "Bob", "message": "I'm good, thanks! How about you?", "timestamp": "2024-11-26T10:01:00"},
+    {"id": "3", "user": "Alice", "message": "Doing well! Any plans for the weekend?", "timestamp": "2024-11-26T10:02:00"}
+]
