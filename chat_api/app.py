@@ -1,14 +1,10 @@
 from flask import Flask
+from routes import register_routes
 
 app = Flask(__name__)
 
-@app.route('/')
-def home():
-    return "Hello from Flask on AWS EC2!"
-
-@app.route('/nitin')
-def nitin():
-    return "Hello from Nitin Alex Vaidyan"
+# Register routes from routes.py
+register_routes(app)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
