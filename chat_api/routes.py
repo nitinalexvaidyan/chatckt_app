@@ -15,5 +15,4 @@ def register_routes(app):
     @app.route('/query', methods=['POST'])
     def query():
         req_payload = request.get_json()  # Extract JSON payload
-        response = service.process_query(req_payload)  # Call service layer
-        return jsonify(response)  # Return response as JSON
+        return service.process_query(req_payload)  # Call service layer
