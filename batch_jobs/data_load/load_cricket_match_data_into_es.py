@@ -5,7 +5,7 @@ from elasticsearch import Elasticsearch, helpers
 # Elasticsearch configuration
 ES_HOST = "http://localhost:9200"  # Change to your ES endpoint if different
 INDEX_NAME = "cricket_matches"  # Change to your preferred index name
-DATA_FOLDER = "/Users/nitin.alex/Documents/chatckt_app/batch_jobs/test/data"  # Change to the folder containing your JSON files
+DATA_FOLDER = "/home/ubuntu/chatckt_app/batch_jobs/test/all_json"  # Change to the folder containing your JSON files
 
 
 def load_json_files(folder_path):
