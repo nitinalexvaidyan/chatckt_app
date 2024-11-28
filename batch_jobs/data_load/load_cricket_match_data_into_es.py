@@ -1,6 +1,7 @@
 import os
 import json
 import create_mapping
+import traceback
 from elasticsearch import Elasticsearch, helpers
 
 # Elasticsearch configuration
@@ -51,6 +52,7 @@ def index_data_to_es(es, data_list):
             es.index(index=INDEX_NAME, document=source_data)
             count += 1
     except Exception as e:
+        traceback.print_exc()
         print(f"Error inserting data: {e}")
 
 
