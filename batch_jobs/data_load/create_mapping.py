@@ -74,6 +74,23 @@ def create():
                         "match_type_number": {
                             "type": "long"
                         },
+                        "missing": {
+                            "type": "object",
+                            "dynamic": "true",
+                            "properties": {
+                                "powerplays": {
+                                    "type": "nested",
+                                    "properties": {
+                                        "1": {
+                                            "type": "keyword"
+                                        }
+                                    }
+                                },
+                                "umpires": {
+                                    "type": "keyword"
+                                }
+                            }
+                        },
                         "officials": {
                             "properties": {
                                 "match_referees": {
