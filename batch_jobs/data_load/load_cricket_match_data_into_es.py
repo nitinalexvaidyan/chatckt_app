@@ -1,5 +1,6 @@
 import os
 import json
+import create_mapping
 from elasticsearch import Elasticsearch, helpers
 
 # Elasticsearch configuration
@@ -54,6 +55,7 @@ def index_data_to_es(es, data_list):
 
 
 def main():
+    create_mapping.create()
     # Initialize Elasticsearch client
     es = Elasticsearch(ES_HOST)
 
