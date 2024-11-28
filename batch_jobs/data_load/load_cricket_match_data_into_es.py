@@ -38,6 +38,20 @@ def insert_data_to_es(es, data_list):
     except Exception as e:
         print(f"Error inserting data: {e}")
 
+def index_data_to_es(es, data_list):
+    """Insert data into Elasticsearch."""
+    try:
+        count = 1
+        for doc in data_list:
+            source_data = dict()
+            source_data["info"] = doc["info"]
+            source_data["innings"] = doc["innings"]
+            print(f"Doc No:{count}")
+            es.index(index=INDEX_NAME, document=source_data)
+            count += 1
+    except Exception as e:
+        print(f"Error inserting data: {e}")
+
 
 def main():
     # Initialize Elasticsearch client
@@ -48,7 +62,8 @@ def main():
 
     # Insert data into Elasticsearch
     if match_data_list:
-        insert_data_to_es(es, match_data_list)
+        # insert_data_to_es(es, match_data_list)
+        index_data_to_es(es, match_data_list)
     else:
         print("No JSON files found in the specified folder.")
 
