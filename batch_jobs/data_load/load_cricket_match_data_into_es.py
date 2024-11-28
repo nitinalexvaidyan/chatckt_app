@@ -2,7 +2,7 @@ import os
 import json
 import create_mapping
 import traceback
-from elasticsearch import Elasticsearch, helpers
+from elasticsearch import Elasticsearch, helpers, exceptions
 
 # Elasticsearch configuration
 ES_HOST = "http://localhost:9200"  # Change to your ES endpoint if different
@@ -51,9 +51,9 @@ def index_data_to_es(es, data_list):
             print(f"Doc No:{count}")
             es.index(index=INDEX_NAME, document=source_data)
             count += 1
-    except Exception as e:
-        traceback.print_exc()
-        print(f"Error inserting data: {e}")
+    except exceptions.RequestError as e:
+        print("Error: >>> ", e.info)
+        print("source data >>>", source_data)
 
 
 def main():
