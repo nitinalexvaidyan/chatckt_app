@@ -9,6 +9,9 @@ def create():
 
     # Define the mapping
     mapping = {
+        "settings": {
+            "index.mapping.total_fields.limit": 2000
+        },
         "mappings": {
             "properties": {
                 "info": {
