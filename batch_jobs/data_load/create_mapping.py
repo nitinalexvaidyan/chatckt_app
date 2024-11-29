@@ -20,13 +20,7 @@ def create():
                             "type": "long"
                         },
                         "city": {
-                            "type": "text",
-                            "fields": {
-                                "keyword": {
-                                    "type": "keyword",
-                                    "ignore_above": 256
-                                }
-                            }
+                            "type": "keyword"
                         },
                         "dates": {
                             "type": "date"
@@ -37,42 +31,18 @@ def create():
                                     "type": "long"
                                 },
                                 "name": {
-                                    "type": "text",
-                                    "fields": {
-                                        "keyword": {
-                                            "type": "keyword",
-                                            "ignore_above": 256
-                                        }
-                                    }
+                                    "type": "keyword"
                                 },
                                 "stage": {
-                                    "type": "text",
-                                    "fields": {
-                                        "keyword": {
-                                            "type": "keyword",
-                                            "ignore_above": 256
-                                        }
-                                    }
+                                    "type": "keyword"
                                 }
                             }
                         },
                         "gender": {
-                            "type": "text",
-                            "fields": {
-                                "keyword": {
-                                    "type": "keyword",
-                                    "ignore_above": 256
-                                }
-                            }
+                            "type": "keyword"
                         },
                         "match_type": {
-                            "type": "text",
-                            "fields": {
-                                "keyword": {
-                                    "type": "keyword",
-                                    "ignore_above": 256
-                                }
-                            }
+                            "type": "keyword"
                         },
                         "match_type_number": {
                             "type": "long"
@@ -80,40 +50,16 @@ def create():
                         "officials": {
                             "properties": {
                                 "match_referees": {
-                                    "type": "text",
-                                    "fields": {
-                                        "keyword": {
-                                            "type": "keyword",
-                                            "ignore_above": 256
-                                        }
-                                    }
+                                    "type": "keyword"
                                 },
                                 "reserve_umpires": {
-                                    "type": "text",
-                                    "fields": {
-                                        "keyword": {
-                                            "type": "keyword",
-                                            "ignore_above": 256
-                                        }
-                                    }
+                                    "type": "keyword"
                                 },
                                 "tv_umpires": {
-                                    "type": "text",
-                                    "fields": {
-                                        "keyword": {
-                                            "type": "keyword",
-                                            "ignore_above": 256
-                                        }
-                                    }
+                                    "type": "keyword"
                                 },
                                 "umpires": {
-                                    "type": "text",
-                                    "fields": {
-                                        "keyword": {
-                                            "type": "keyword",
-                                            "ignore_above": 256
-                                        }
-                                    }
+                                    "type": "keyword"
                                 }
                             }
                         },
@@ -127,13 +73,7 @@ def create():
                                     }
                                 },
                                 "winner": {
-                                    "type": "text",
-                                    "fields": {
-                                        "keyword": {
-                                            "type": "keyword",
-                                            "ignore_above": 256
-                                        }
-                                    }
+                                    "type": "keyword"
                                 }
                             }
                         },
@@ -141,65 +81,29 @@ def create():
                             "type": "long"
                         },
                         "player_of_match": {
-                            "type": "text",
-                            "fields": {
-                                "keyword": {
-                                    "type": "keyword",
-                                    "ignore_above": 256
-                                }
-                            }
+                            "type": "keyword"
                         },
                         "season": {
                             "type": "text"
                         },
                         "team_type": {
-                            "type": "text",
-                            "fields": {
-                                "keyword": {
-                                    "type": "keyword",
-                                    "ignore_above": 256
-                                }
-                            }
+                            "type": "keyword"
                         },
                         "teams": {
-                            "type": "text",
-                            "fields": {
-                                "keyword": {
-                                    "type": "keyword",
-                                    "ignore_above": 256
-                                }
-                            }
+                            "type": "keyword"
                         },
                         "toss": {
                             "properties": {
                                 "decision": {
-                                    "type": "text",
-                                    "fields": {
-                                        "keyword": {
-                                            "type": "keyword",
-                                            "ignore_above": 256
-                                        }
-                                    }
+                                    "type": "keyword"
                                 },
                                 "winner": {
-                                    "type": "text",
-                                    "fields": {
-                                        "keyword": {
-                                            "type": "keyword",
-                                            "ignore_above": 256
-                                        }
-                                    }
+                                    "type": "keyword"
                                 }
                             }
                         },
                         "venue": {
-                            "type": "text",
-                            "fields": {
-                                "keyword": {
-                                    "type": "keyword",
-                                    "ignore_above": 256
-                                }
-                            }
+                            "type": "keyword"
                         }
                     }
                 },
@@ -213,22 +117,10 @@ def create():
                                     "type": "nested",
                                     "properties": {
                                         "batter": {
-                                            "type": "text",
-                                            "fields": {
-                                                "keyword": {
-                                                    "type": "keyword",
-                                                    "ignore_above": 256
-                                                }
-                                            }
+                                            "type": "keyword"
                                         },
                                         "bowler": {
-                                            "type": "text",
-                                            "fields": {
-                                                "keyword": {
-                                                    "type": "keyword",
-                                                    "ignore_above": 256
-                                                }
-                                            }
+                                            "type": "keyword"
                                         },
                                         "extras": {
                                             "properties": {
@@ -247,13 +139,7 @@ def create():
                                             }
                                         },
                                         "non_striker": {
-                                            "type": "text",
-                                            "fields": {
-                                                "keyword": {
-                                                    "type": "keyword",
-                                                    "ignore_above": 256
-                                                }
-                                            }
+                                            "type": "keyword"
                                         },
                                         "runs": {
                                             "properties": {
@@ -273,33 +159,15 @@ def create():
                                                 "fielders": {
                                                     "properties": {
                                                         "name": {
-                                                            "type": "text",
-                                                            "fields": {
-                                                                "keyword": {
-                                                                    "type": "keyword",
-                                                                    "ignore_above": 256
-                                                                }
-                                                            }
+                                                            "type": "keyword"
                                                         }
                                                     }
                                                 },
                                                 "kind": {
-                                                    "type": "text",
-                                                    "fields": {
-                                                        "keyword": {
-                                                            "type": "keyword",
-                                                            "ignore_above": 256
-                                                        }
-                                                    }
+                                                    "type": "keyword"
                                                 },
                                                 "player_out": {
-                                                    "type": "text",
-                                                    "fields": {
-                                                        "keyword": {
-                                                            "type": "keyword",
-                                                            "ignore_above": 256
-                                                        }
-                                                    }
+                                                    "type": "keyword"
                                                 }
                                             }
                                         }

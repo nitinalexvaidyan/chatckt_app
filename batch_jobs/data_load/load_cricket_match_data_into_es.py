@@ -52,6 +52,9 @@ def index_data_to_es(es, data_list):
                 del doc["info"]["players"]
             if "registry" in doc["info"]:
                 del doc["info"]["registry"]
+            if "miscounted_overs" in doc["innings"]:
+                del doc["innings"]["miscounted_overs"]
+
 
             source_data["info"] = doc["info"]
             source_data["innings"] = doc["innings"]
