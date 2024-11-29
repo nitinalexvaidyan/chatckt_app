@@ -48,6 +48,11 @@ def index_data_to_es(es, data_list):
             source_data = dict()
             if "missing" in doc["info"]:
                 del doc["info"]["missing"]
+            if "players" in doc["info"]:
+                del doc["info"]["players"]
+            if "registry" in doc["info"]:
+                del doc["info"]["registry"]
+
             source_data["info"] = doc["info"]
             source_data["innings"] = doc["innings"]
             print(f"Doc No:{count}")
