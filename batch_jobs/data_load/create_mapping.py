@@ -204,10 +204,13 @@ def create():
                     }
                 },
                 "innings": {
+                    "type": "nested",
                     "properties": {
                         "overs": {
+                            "type": "nested",
                             "properties": {
                                 "deliveries": {
+                                    "type": "nested",
                                     "properties": {
                                         "batter": {
                                             "type": "text",
