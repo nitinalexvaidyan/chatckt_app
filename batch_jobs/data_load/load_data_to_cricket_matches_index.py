@@ -6,7 +6,7 @@ from elasticsearch import Elasticsearch, helpers, exceptions
 # Elasticsearch configuration
 ES_HOST = "http://localhost:9200"  # Change to your ES endpoint if different
 INDEX_NAME = "cricket_matches"  # Change to your preferred index name
-DATA_FOLDER = "/home/ubuntu/chatckt_app/batch_jobs/test/all_json"  # Change to the folder containing your JSON files
+DATA_FOLDER = "/home/ubuntu/chatckt_app/batch_jobs/test/all_matches_json_data"  # Change to the folder containing your JSON files
 
 def to_lowercase(data):
     if isinstance(data, dict):
@@ -33,6 +33,8 @@ def load_data_into_index(folder_path):
                     process_and_load_data_to_es(es, files_data, match_cnt)
                     files_data = []
                     print(f"Matches {match_cnt-9} - {match_cnt} loaded into index")
+                if match_cnt == 25:
+                    break
 
     process_and_load_data_to_es(es, files_data, match_cnt)
     print(f"Matches till {match_cnt} loaded into index")
@@ -251,11 +253,11 @@ def process_and_load_data_to_es(es, matches_batch_data, match_cnt):
                         lowered_doc = to_lowercase(one_doc)
                         # print(f"One Ball Doc:{lowered_doc}")
                         batch_result.append(lowered_doc)
-
+        actions = []
         for each_doc in batch_result:
-            data = {"_index": INDEX_NAME, "_source": each_doc}
-            helpers.bulk(es, data)
             # es.index(index=INDEX_NAME, document=each_doc)
+            actions.append({"_index": INDEX_NAME, "_source": each_doc})
+        helpers.bulk(es, actions)
 
     except exceptions.RequestError as e:
         print("Error: >>> ", e.info)
