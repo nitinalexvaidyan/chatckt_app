@@ -1,23 +1,16 @@
-import logo from './logo.svg';
+import {SearchBar} from "./Components";
 import './App.css';
 
 function App() {
+
+  const handleSearch = (query) => {
+    console.log("Received query from child:", query);
+    // Perform any actions with the received query, like making an API call
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+       <SearchBar onSearch={handleSearch}/>
     </div>
   );
 }
