@@ -3,55 +3,54 @@ import json
 import cricket_matches_mapping
 from elasticsearch import Elasticsearch, helpers, exceptions
 
-import sample_match_data
 # Elasticsearch configuration
 ES_HOST = "http://localhost:9200"  # Change to your ES endpoint if different
 INDEX_NAME = "cricket_matches"  # Change to your preferred index name
-DATA_FOLDER = "/Users/nitin.alex/Downloads/all_json"  # Change to the folder containing your JSON files
+DATA_FOLDER = "/home/ubuntu/chatckt_app/batch_jobs/test/all_json"  # Change to the folder containing your JSON files
 
+def to_lowercase(data):
+    if isinstance(data, dict):
+        return {key: to_lowercase(value) for key, value in data.items()}
+    elif isinstance(data, list):
+        return [to_lowercase(item) for item in data]
+    elif isinstance(data, str):
+        return data.lower()
+    return data
 
-def load_json_files(folder_path):
-    """Load JSON data from files in the specified folder."""
+def load_data_into_index(folder_path):
+    match_cnt = 0
     files_data = []
+    es = Elasticsearch(ES_HOST)
     for filename in os.listdir(folder_path):
         if filename.endswith(".json"):
             file_path = os.path.join(folder_path, filename)
             with open(file_path, "r", encoding="utf-8") as file:
+                match_cnt += 1
+                print(f"Processing Match No: {match_cnt}")
                 data = json.load(file)
-                index_data_to_es("es", [data])
-    #             files_data.append(data)
-    # return files_data
+                files_data.append(data)
+                if match_cnt % 10 == 0:
+                    process_and_load_data_to_es(es, files_data, match_cnt)
+                    files_data = []
+                    print(f"Matches {match_cnt-9} - {match_cnt} loaded into index")
+
+    process_and_load_data_to_es(es, files_data, match_cnt)
+    print(f"Matches till {match_cnt} loaded into index")
+    print(f"Data load completed.\n Total matches loaded: {match_cnt}")
 
 
-def insert_data_to_es(es, data_list):
-    """Insert data into Elasticsearch."""
-    actions = []
-    for match_data in data_list:
-        source_data = dict()
-        source_data["info"] = match_data["info"]
-        source_data["innings"] = match_data["innings"]
-        actions.append({
-            "_index": INDEX_NAME,
-            "_source": source_data
-        })
-
+def process_and_load_data_to_es(es, matches_batch_data, match_cnt):
     try:
-        helpers.bulk(es, actions)
-        print(f"Successfully inserted {len(actions)} documents into '{INDEX_NAME}' index.")
-    except Exception as e:
-        print(f"Error inserting data: {e}")
-
-def index_data_to_es(es, all_matches_data):
-    try:
-        match_cnt = 0
-        for one_match in all_matches_data:
-            match_cnt += 1
+        batch_result = []
+        match_count = (int(match_cnt/10) - 1) * 10
+        for one_match in matches_batch_data:
             # ___ match info fields ___
+            match_count += 1
             _match_info = one_match["info"]
             balls_per_over = _match_info.get("balls_per_over")
             city = _match_info.get("city")
             dates = _match_info["dates"]
-            match_id = match_cnt
+            match_id = match_count
             match_name = _match_info.get("event", {}).get("name")
             match_stage = _match_info.get("event", {}).get("stage")
             gender = _match_info["gender"]
@@ -83,7 +82,7 @@ def index_data_to_es(es, all_matches_data):
                 innings_number = innings_cnt
                 batting_team = _innings["team"]
                 bowling_team = [team for team in teams if team != batting_team][0]
-                # forfeitedcase
+                # forfeited case
                 for _over in _innings.get("overs", []):
                     over_no = _over["over"] + 1
                     ball_cnt = 0
@@ -249,27 +248,24 @@ def index_data_to_es(es, all_matches_data):
                         if bowl_out:
                             one_doc["bowl_out"] = bowl_out
 
+                        lowered_doc = to_lowercase(one_doc)
+                        # print(f"One Ball Doc:{lowered_doc}")
+                        batch_result.append(lowered_doc)
 
-                        print(f"One Ball Doc:{one_doc}")
-            # es.index(index=INDEX_NAME, document=one_doc)
+        for each_doc in batch_result:
+            data = {"_index": INDEX_NAME, "_source": each_doc}
+            helpers.bulk(es, data)
+            # es.index(index=INDEX_NAME, document=each_doc)
 
     except exceptions.RequestError as e:
         print("Error: >>> ", e.info)
-        print("source data >>>", one_doc)
 
 
 def main():
-    all_matches_data = load_json_files(DATA_FOLDER)
-    if all_matches_data:
-        cricket_matches_mapping.create()
-        es = Elasticsearch(ES_HOST)
-        index_data_to_es(es, all_matches_data)
-    else:
-        print("No JSON files found in the specified folder.")
+    cricket_matches_mapping.create()
+    load_data_into_index(DATA_FOLDER)
 
 
 if __name__ == "__main__":
-    all_matches_data = load_json_files(DATA_FOLDER)
-    # index_data_to_es("es", all_matches_data)
-    print("DONE DONE DONE !!! ---")
-    # main()
+    main()
+    print("Data load complete. Hurray !!! !!! ... ...")
