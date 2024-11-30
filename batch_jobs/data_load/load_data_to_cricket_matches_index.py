@@ -33,8 +33,7 @@ def load_data_into_index(folder_path):
                     process_and_load_data_to_es(es, files_data, match_cnt)
                     files_data = []
                     print(f"Matches {match_cnt-9} - {match_cnt} loaded into index")
-                if match_cnt == 25:
-                    break
+
 
     process_and_load_data_to_es(es, files_data, match_cnt)
     print(f"Matches till {match_cnt} loaded into index")
