@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { SearchBar, ChatMessages } from "./Components";
 import './App.css';
-
+const BACKENDAPI = "http://localhost:14000/query"
 function App() {
   const [messages, setMessages] = useState([]); // State to store chat messages
 
@@ -28,7 +28,7 @@ function App() {
 
     try {
       // Make the API call to send the user's message
-      const response = await axios.post("http://localhost:14000/query", {
+      const response = await axios.post(BACKENDAPI, {
         message: query, // Sending the message to the API
       });
 
