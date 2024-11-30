@@ -33,12 +33,17 @@ function App() {
       });
 
       // Assuming the API returns a JSON response with a 'message' field
-      const botMessage = { text: response.data.message, sender: "bot" };
+      let botMessage
+      if (response?.data?.message){
+        botMessage = { text: response.data.message, sender: "bot" };
+      }
       console.log(botMessage)
 
       // Add bot's message to the state
       setMessages((prevMessages) => [...prevMessages, botMessage]);
     } catch (error) {
+      let botMessage = { text: "....", sender: "bot" };
+      setMessages((prevMessages) => [...prevMessages, botMessage]);
       console.error("Error:", error);
       // You can display an error message if needed
     }
