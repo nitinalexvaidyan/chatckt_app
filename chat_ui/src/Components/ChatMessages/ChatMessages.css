@@ -1,0 +1,61 @@
+/* App.css */
+
+/* Container for all messages */
+.chat-messages-container {
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 10px;
+    background-color: #f0f0f0;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Styling for individual messages */
+  .message {
+    padding: 8px 12px;
+    border-radius: 10px;
+    max-width: 70%;
+    margin: 5px 0;
+    word-wrap: break-word;
+  }
+  
+  .message.user {
+    background-color: #cce5ff;
+    align-self: flex-end;
+  }
+  
+  .message.bot {
+    background-color: #d1ffd6;
+    align-self: flex-start;
+  }
+  
+  /* Styling for the input area */
+  .search-bar-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .search-bar-input {
+    font-size: 14px;
+    padding: 10px;
+    width: 80%;
+    resize: none;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+  }
+  
+  .search-bar-button {
+    padding: 8px 16px;
+    background-color: #5cb85c;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+  

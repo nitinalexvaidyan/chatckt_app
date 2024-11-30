@@ -1,10 +1,11 @@
 /venv/
+/batch_jobs/data_load/t20s_json
 
 # dependencies
 node_modules
 .pnp
 .pnp.js
-
+.idea
 # testing
 chat_ui/coverage
 
