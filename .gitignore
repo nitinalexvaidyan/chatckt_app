@@ -1,1 +1,13 @@
 /venv/
+
+# dependencies
+node_modules
+.pnp
+.pnp.js
+
+# testing
+chat_ui/coverage
+
+# production
+chat_ui/build
+
