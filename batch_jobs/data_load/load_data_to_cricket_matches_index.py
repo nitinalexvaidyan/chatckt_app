@@ -3,11 +3,11 @@ import json
 import cricket_matches_mapping
 from elasticsearch import Elasticsearch, helpers, exceptions
 
-import sample
+import sample_match_data
 # Elasticsearch configuration
 ES_HOST = "http://localhost:9200"  # Change to your ES endpoint if different
 INDEX_NAME = "cricket_matches"  # Change to your preferred index name
-DATA_FOLDER = "/home/ubuntu/chatckt_app/batch_jobs/test/all_json"  # Change to the folder containing your JSON files
+DATA_FOLDER = "/Users/nitin.alex/Downloads/all_json"  # Change to the folder containing your JSON files
 
 
 def load_json_files(folder_path):
@@ -18,8 +18,9 @@ def load_json_files(folder_path):
             file_path = os.path.join(folder_path, filename)
             with open(file_path, "r", encoding="utf-8") as file:
                 data = json.load(file)
-                files_data.append(data)
-    return files_data
+                index_data_to_es("es", [data])
+    #             files_data.append(data)
+    # return files_data
 
 
 def insert_data_to_es(es, data_list):
@@ -48,18 +49,18 @@ def index_data_to_es(es, all_matches_data):
             # ___ match info fields ___
             _match_info = one_match["info"]
             balls_per_over = _match_info.get("balls_per_over")
-            city = _match_info["city"]
+            city = _match_info.get("city")
             dates = _match_info["dates"]
             match_id = match_cnt
-            match_name = _match_info["event"]["name"]
-            match_stage = _match_info["event"].get("stage")
+            match_name = _match_info.get("event", {}).get("name")
+            match_stage = _match_info.get("event", {}).get("stage")
             gender = _match_info["gender"]
             match_type = _match_info["match_type"]
             match_type_number = _match_info.get("match_type_number")
-            match_referees = _match_info["officials"].get("match_referees")
-            reserve_umpires = _match_info["officials"].get("reserve_umpires")
-            tv_umpires = _match_info["officials"].get("tv_umpires")
-            umpires = _match_info["officials"].get("umpires")
+            match_referees = _match_info.get("officials", {}).get("match_referees")
+            reserve_umpires = _match_info.get("officials", {}).get("reserve_umpires")
+            tv_umpires = _match_info.get("officials", {}).get("tv_umpires")
+            umpires = _match_info.get("officials", {}).get("umpires")
             outcome = _match_info["outcome"].get("result")
             winner = _match_info["outcome"].get("winner")
             winner_wickets = _match_info["outcome"].get("by", {}).get("wickets")
@@ -82,7 +83,8 @@ def index_data_to_es(es, all_matches_data):
                 innings_number = innings_cnt
                 batting_team = _innings["team"]
                 bowling_team = [team for team in teams if team != batting_team][0]
-                for _over in _innings["overs"]:
+                # forfeitedcase
+                for _over in _innings.get("overs", []):
                     over_no = _over["over"] + 1
                     ball_cnt = 0
                     for _ball in _over["deliveries"]:
@@ -107,11 +109,15 @@ def index_data_to_es(es, all_matches_data):
                             valid_ball = False
 
                         wicket_fielders = []
-                        wk_fielders = _ball.get("wickets", {}).get("fielders", [])
-                        for _fld in wk_fielders:
-                            wicket_fielders.append(_fld["name"])
-                        wicket_kind = _ball.get("wickets", {}).get("kind")
-                        player_out = _ball.get("wickets", {}).get("player_out")
+                        wicket_kind = None
+                        player_out = None
+                        wickets = _ball.get("wickets")
+                        if wickets:
+                            wk_fielders = wickets[0].get("fielders", [])
+                            for _fld in wk_fielders:
+                                wicket_fielders.append(_fld.get("name") or ( "substitute" if _fld.get("substitute") else None))
+                            wicket_kind = wickets[0].get("kind")
+                            player_out = wickets[0].get("player_out")
 
                         review_by = _ball.get("review", {}).get("by")
                         review_umpire = _ball.get("review", {}).get("umpire")
@@ -123,17 +129,17 @@ def index_data_to_es(es, all_matches_data):
                         powerplay_over = False
                         powerplay_type = None
                         for _pwr_ply in _innings.get("powerplays", []):
-                            pwr_ply_from = _pwr_ply["from"].split(".")[0]
-                            pwr_ply_to = _pwr_ply["to"].split(".")[0]
+                            pwr_ply_from = str(_pwr_ply["from"]).split(".")[0]
+                            pwr_ply_to = str(_pwr_ply["to"]).split(".")[0]
                             pwr_ply_type = _pwr_ply["type"]
-                            if pwr_ply_from <= over_no-1 <= pwr_ply_to:
+                            if int(pwr_ply_from) <= over_no-1 <= int(pwr_ply_to):
                                 powerplay_over = True
                                 powerplay_type = pwr_ply_type
                         target_overs = None
                         target_runs = None
                         if _innings.get("target"):
-                            target_overs = _innings["overs"]
-                            target_runs = _innings["runs"]
+                            target_overs = _innings["target"]["overs"]
+                            target_runs = _innings["target"]["runs"]
 
                         innings_declared = _innings.get("declared")
                         followon = None
@@ -141,11 +147,8 @@ def index_data_to_es(es, all_matches_data):
                         bowl_out = None
 
                         one_doc = {
-                            "_match_info": _match_info,
-                            "city": city,
                             "dates": dates,
                             "match_id": match_id,
-                            "match_name": match_name,
                             "gender": gender,
                             "match_type": match_type,
                             "team_type": team_type,
@@ -167,8 +170,12 @@ def index_data_to_es(es, all_matches_data):
                             "valid_ball": valid_ball
                         }
 
+                        if match_name:
+                            one_doc["match_name"] = match_name
                         if balls_per_over:
                             one_doc["balls_per_over"] = balls_per_over
+                        if city:
+                            one_doc["city"] = city
                         if match_stage:
                             one_doc["match_stage"] = match_stage
                         if match_type_number:
@@ -244,8 +251,8 @@ def index_data_to_es(es, all_matches_data):
 
 
                         print(f"One Ball Doc:{one_doc}")
-            es.index(index=INDEX_NAME, document=one_doc)
-            match_cnt += 1
+            # es.index(index=INDEX_NAME, document=one_doc)
+
     except exceptions.RequestError as e:
         print("Error: >>> ", e.info)
         print("source data >>>", one_doc)
@@ -262,5 +269,7 @@ def main():
 
 
 if __name__ == "__main__":
-    index_data_to_es("es", )
-    main()
+    all_matches_data = load_json_files(DATA_FOLDER)
+    # index_data_to_es("es", all_matches_data)
+    print("DONE DONE DONE !!! ---")
+    # main()
