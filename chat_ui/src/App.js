@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { SearchBar, ChatMessages } from "./Components";
 import './App.css';
-const BACKENDAPI = "http://localhost:14000/query"
+const BACKENDAPI = "http://192.168.0.168:5000/query"
 function App() {
   const [messages, setMessages] = useState([]); // State to store chat messages
 
