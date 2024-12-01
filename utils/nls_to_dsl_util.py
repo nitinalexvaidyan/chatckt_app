@@ -184,14 +184,16 @@ def get_dsl_query(query):
 
 
 def get_final_response(es_response,query):
-    prompt_template = ChatPromptTemplate.from_template("For the user's query, we attempted to extract results by retrieving cricket sheet data from an Elasticsearch database. The query is query - {query} and the corresponding database response data is response_data - {es_response}. If you can provide an answer to the user's query based on the response data, please do so. Otherwise, reply with `I dont know.`")
-    question = prompt_template.format_messages(
-                        query=query,
-                        es_response=es_response)
-    query_response = chat(question)
-    return query_response.content
-
-
+    try:
+        prompt_template = ChatPromptTemplate.from_template("For the user's query, we attempted to extract results by retrieving cricket sheet data from an Elasticsearch database. The query is query - {query} and the corresponding database response data is response_data - {es_response}. If you can provide an answer to the user's query based on the response data, please do so. Otherwise, reply with `I dont know.`")
+        question = prompt_template.format_messages(
+                            query=query,
+                            es_response=es_response)
+        query_response = chat(question)
+        resp = query_response.content
+    except:
+        resp = "Not able to answer due to error"
+    return resp
 
 
 
