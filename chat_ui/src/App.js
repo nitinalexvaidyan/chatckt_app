@@ -45,7 +45,6 @@ function App() {
       let botMessage = { text: "....", sender: "bot" };
       setMessages((prevMessages) => [...prevMessages, botMessage]);
       console.error("Error:", error);
-      // You can display an error message if needed
     }
   };
 
