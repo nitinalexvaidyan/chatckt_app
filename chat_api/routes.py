@@ -1,9 +1,10 @@
 import service
 from flask import request, jsonify
+from flask_cors import CORS  # Import CORS
 
 
 def register_routes(app):
-
+    CORS(app)
     @app.route('/', methods=['GET'])
     def home():
         return "Hello from Flask on AWS EC2!"
