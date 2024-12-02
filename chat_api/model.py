@@ -8,14 +8,15 @@ from utils import es_util
 def get_query_answer(query):
     try:
         es_query = nls_to_dsl_util.get_dsl_query(query)
+        print("\ndsl_query >>>>> \n", es_query)
         es_query = {"query": es_query["dsl_query"], "aggs": es_query.get("query", {}).get("bool", {}).get("aggs", {})}
         if "aggs" in es_query.get("query", {}).get("bool"):
             del es_query["query"]["bool"]["aggs"]
-        print("es_query >>>>> \n", es_query)
+        print("\nes_query >>>>> \n", es_query)
         es_response = es_util.search_data("cricket_matches", es_query)
-        print("es_response >>>>> \n", es_response)
+        print("\nes_response >>>>> \n", es_response)
         final_response = nls_to_dsl_util.get_final_response(es_response, query)
-        print(f"final_response >>>>> \n: {final_response}")
+        print(f"\nfinal_response >>>>> \n: {final_response}")
         return final_response
     except Exception as e:
         traceback.print_exc()
