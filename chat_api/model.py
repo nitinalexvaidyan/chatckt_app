@@ -19,9 +19,16 @@ def get_query_answer(query):
             es_query = nls_to_dsl_util.get_dsl_query(query)
 
         print("\ndsl_query >>>>> \n", es_query)
-        es_query = {"query": es_query["dsl_query"], "aggs": es_query.get("dsl_query", {}).get("bool", {}).get("aggs", {})}
-        if "aggs" in es_query.get("query", {}).get("bool"):
+        if es_query.get("dsl_query", {}).get("aggs"):
+            es_query = {"query": es_query["dsl_query"], "aggs": es_query.get("dsl_query", {}).get("aggs", {})}
+        else:
+            es_query = {"query": es_query["dsl_query"], "aggs": es_query.get("dsl_query", {}).get("bool", {}).get("aggs", {})}
+
+        if "aggs" in es_query.get("query", {}):
+            del es_query["query"]["aggs"]
+        if "aggs" in es_query.get("query", {}).get("bool", {}):
             del es_query["query"]["bool"]["aggs"]
+
         print("\nes_query >>>>> \n", es_query)
         es_response = es_util.search_data("cricket_matches", es_query)
         print("\nes_response >>>>> \n", es_response)
