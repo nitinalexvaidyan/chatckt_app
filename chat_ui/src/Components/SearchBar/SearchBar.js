@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./SearchBar.css";
 
-const SearchBar = ({ onSearch }) => {
+const SearchBar = ({ onSearch, disabled }) => {
   const [query, setQuery] = useState("");
 
   const handleKeyDown = (e) => {
@@ -31,10 +31,12 @@ const SearchBar = ({ onSearch }) => {
           style={{
             width: "100%",
           }} // Optional: Adjust width
+          disabled={disabled} 
         />
         <button
           type="button" // Prevent default form submission behavior
           className="search-bar-button"
+          disabled={disabled} 
           onClick={() => {
             if (onSearch) onSearch(query);
             setQuery(""); // Clear the textarea

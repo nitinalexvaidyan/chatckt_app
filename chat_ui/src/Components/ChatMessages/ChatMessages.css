@@ -64,3 +64,56 @@
   background-color: #d1ffd6;
   align-self: flex-start;
 }
+
+.loading-dots {
+  display: inline-block;
+  width: 30px;
+  height: 10px;
+  position: relative;
+}
+
+.loading-dots:after,
+.loading-dots:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 10px;
+  height: 10px;
+  background-color: gray;
+  border-radius: 50%;
+  animation: dot-blink 1.5s infinite ease-in-out;
+}
+
+.loading-dots:before {
+  left: 0;
+  animation-delay: 0s;
+}
+
+.loading-dots:after {
+  right: 0;
+  animation-delay: 0.5s;
+}
+
+@keyframes dot-blink {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Smaller screens: Adjust padding and font size */
+@media screen and (max-width: 768px) {
+  .chat-messages-container{
+    width: 90vw;
+  }
+}
+
+/* Very small screens (like mobile phones): Adjust further */
+@media screen and (max-width: 480px) {
+  .chat-messages-container {
+    width: 90vw;
+  }
+}

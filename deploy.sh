@@ -57,36 +57,36 @@ deploy_flask() {
     log "Deploying Flask application..."
     cd "$FLASK_DIR"
     if pm2 list | grep -q "$APP_NAME_FLASK"; then
-        log "Restarting Flask application..."
+        echo "Restarting Flask application..."
         pm2 restart "$APP_NAME_FLASK"
     else
-        log "Starting Flask application..."
+        echo "Starting Flask application..."
         pm2 start python3 --name "$APP_NAME_FLASK" -- app.py
     fi
 }
 
 # Install React dependencies and build the app
 deploy_react() {
-    log "Installing React dependencies..."
+    echo "Installing React dependencies..."
     cd "$APP_DIR/chat_ui"
     npm install
 
-    log "Building React application..."
+    echo "Building React application..."
     npm run build
 
-    log "Serving React application with PM2..."
+    echo "Serving React application with PM2..."
     if pm2 list | grep -q "$APP_NAME_REACT"; then
-        log "Restarting React application..."
+        echo "Restarting React application..."
         pm2 restart "$APP_NAME_REACT"
     else
-        log "Starting React application..."
+        echo "Starting React application..."
         pm2 serve "$BUILD_DIR" 3000 --name "$APP_NAME_REACT" --spa
     fi
 }
 
 # Configure PM2 for process management
 configure_pm2() {
-    log "Saving PM2 process list..."
+    echo "Saving PM2 process list..."
     pm2 save
 
     log "Setting up PM2 to start on boot..."
@@ -97,7 +97,7 @@ configure_pm2() {
 
 # ----------------- Execution ----------------- #
 
-log "Starting deployment process..."
+echo "Starting deployment process..."
 
 update_repository
 update_env_file
