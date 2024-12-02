@@ -9,6 +9,8 @@ def get_query_answer(query):
     try:
         es_query = nls_to_dsl_util.get_dsl_query(query)
         es_query = {"query": es_query["dsl_query"], "aggs": es_query.get("aggs", {})}
+        if "aggs" in es_query["query"]:
+            del es_query["query"]["aggs"]
         print("es_query >>>>> \n", es_query)
         es_response = es_util.search_data("cricket_matches", es_query)
         print("es_response >>>>> \n", es_response)
