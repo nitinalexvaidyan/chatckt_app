@@ -10,7 +10,7 @@ REPO_URL="https://github.com/nitinalexvaidyan/chatckt_app.git" # Git repository 
 BRANCH="main"                      # Branch to deploy
 BUILD_DIR="build"                  # React build directory
 FLASK_DIR="$APP_DIR/chat_api"      # Flask application directory
-VENV_DIR="$FLASK_DIR/venv/bin/" # Path to Python virtual environment
+VENV_DIR="$FLASK_DIR/venv/bin" # Path to Python virtual environment
 
 # ----------------- Functions ----------------- #
 
