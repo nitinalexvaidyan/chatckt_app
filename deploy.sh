@@ -10,7 +10,7 @@ REPO_URL="https://github.com/nitinalexvaidyan/chatckt_app.git" # Git repository 
 BRANCH="main"                      # Branch to deploy
 BUILD_DIR="build"                  # React build directory
 FLASK_DIR="$APP_DIR/chat_api"      # Flask application directory
-VENV_DIR="$FLASK_DIR/venv/bin/activate" # Path to Python virtual environment
+VENV_DIR="$FLASK_DIR/venv/bin/" # Path to Python virtual environment
 
 # ----------------- Functions ----------------- #
 
@@ -45,7 +45,7 @@ update_env_file() {
 activate_venv() {
     if [ -f "$VENV_DIR" ]; then
         log "Activating Python virtual environment..."
-        source "$VENV_DIR"
+        source "$VENV_DIR/activate"
         export OPENAI_API_KEY='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'
     else
         log "Virtual environment not found. Please ensure it exists at $VENV_DIR."
