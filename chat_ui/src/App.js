@@ -29,13 +29,13 @@ function App() {
     try {
       // Make the API call to send the user's message
       const response = await axios.post(BACKENDAPI, {
-        message: query, // Sending the message to the API
+        "query": query, // Sending the message to the API
       });
 
       // Assuming the API returns a JSON response with a 'message' field
       let botMessage
-      if (response?.data?.message){
-        botMessage = { text: response.data.message, sender: "bot" };
+      if (response?.data?.response){
+        botMessage = { text: response.data.response, sender: "bot" };
       }
       console.log(botMessage)
 
