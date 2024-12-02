@@ -12,6 +12,8 @@ import re
 
 llm_model='gpt-4o-mini'
 api_key=os.getenv('OPENAI_API_KEY')
+if no api_key:
+api_key='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'
 client = OpenAI(api_key=api_key)
 chat = ChatOpenAI(temperature=0.0, model=llm_model)
 
