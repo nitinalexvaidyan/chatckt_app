@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Deployment script for a full-stack application (React front-end and Flask back-end)
-
+export OPENAI_API_KEY='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'
 # ----------------- Configuration ----------------- #
 APP_NAME_REACT="chatckt_ui"        # PM2 process name for React app
 APP_NAME_FLASK="chatckt_api"       # PM2 process name for Flask app
@@ -10,7 +10,7 @@ REPO_URL="https://github.com/nitinalexvaidyan/chatckt_app.git" # Git repository 
 BRANCH="main"                      # Branch to deploy
 BUILD_DIR="build"                  # React build directory
 FLASK_DIR="$APP_DIR/chat_api"      # Flask application directory
-VENV_DIR="$APP_DIR/venv/bin" # Path to Python virtual environment
+VENV_DIR="$APP_DIR/venv/bin"       # Path to Python virtual environment
 
 # ----------------- Functions ----------------- #
 
@@ -46,7 +46,6 @@ activate_venv() {
     if [ -d "$APP_DIR" ]; then
         log "Activating Python virtual environment..."
         source "$VENV_DIR/activate"
-        export OPENAI_API_KEY='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'
     else
         log "Virtual environment not found. Please ensure it exists at $VENV_DIR."
         exit 1
@@ -104,7 +103,7 @@ update_repository
 update_env_file
 activate_venv
 deploy_flask
-# deploy_react
+deploy_react
 configure_pm2
 
 log "Deployment complete!"
