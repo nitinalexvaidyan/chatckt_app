@@ -15,8 +15,10 @@
   font-size: 16px;
   cursor: pointer;
   border-radius: 5px;
-  margin-top: 20px;
   transition: background-color 0.3s ease;
+  position: fixed; 
+  margin-top: 85vh;
+  margin-left: 75vw;
 }
 
 .clear-chat-button:hover {
