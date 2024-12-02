@@ -14,7 +14,11 @@ const ChatMessages = ({ messages }) => {
             marginBottom: "10px",
           }}
         >
-          <span>{message.text}</span>
+          {message.text === "loading" ? (
+            <span className="loading-dots"></span> // Show loading dots
+          ) : (
+            <span>{message.text}</span>
+          )}
         </div>
       ))}
     </div>

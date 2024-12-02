@@ -11,16 +11,57 @@
   background-color: #ff4d4d;
   color: white;
   border: none;
-  padding: 10px 20px;
+  padding: 1vw 3vw;
   font-size: 16px;
   cursor: pointer;
   border-radius: 5px;
   transition: background-color 0.3s ease;
-  position: fixed; 
-  margin-top: 85vh;
-  margin-left: 75vw;
 }
 
 .clear-chat-button:hover {
   background-color: #ff1a1a;
+}
+
+/* Make sure these elements stay fixed on the screen */
+.fixed-buttons-container {
+  align-items: center;
+  justify-content: center;
+  height: 10vh;
+  width: 90vw;
+  position: fixed;
+  top: 1vh;  /* Adjust the top position as needed */
+  margin-top: 80vh;
+}
+
+/* Very small screens (like mobile phones): Adjust further */
+@media screen and (max-width: 480px) {
+  .clear-chat-button {
+    padding: .5vw 2vw; /* Larger padding for better touch target */
+    font-size: 10px;  /* Smaller font size for compact display */
+  }
+  .fixed-buttons-container {
+    margin-top: 70vh;
+  }
+}
+
+/* Smaller screens: Adjust padding and font size */
+@media screen and (max-width: 768px) {
+  .clear-chat-button {
+    padding: .3vw 5vw; /* Increase padding for smaller screens */
+    font-size: 14px;  /* Slightly smaller font size */
+  }
+  .fixed-buttons-container {
+    margin-top: 80vh;
+  }
+}
+
+/* Larger screens: Adjust for desktops */
+@media screen and (min-width: 1024px) {
+  .clear-chat-button {
+    padding: 0.8vw 2vw; /* Slightly smaller padding for larger screens */
+    font-size: 18px;    /* Larger font size for better readability */
+  }
+  .fixed-buttons-container {
+    display: flex;
+  }
 }
