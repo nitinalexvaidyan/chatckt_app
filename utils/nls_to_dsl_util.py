@@ -11,7 +11,7 @@ import re
 
 
 llm_model='gpt-4o-mini'
-api_key=os.getenv('OPENAI_API_KEY') or "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"
+api_key=os.getenv('OPENAI_API_KEY')
 client = OpenAI(api_key=api_key)
 chat = ChatOpenAI(temperature=0.0, model=llm_model)
 
@@ -25,21 +25,23 @@ def get_table_info_text():
 
             dates: Dates on which the match was played. Usually a single date, but Test matches may span multiple dates.
             match_id: Unique identifier for each match.
-            gender: Specifies whether the match was played by men or women.
-            match_type: Type of match, e.g., T20, Test, ipl, etc.
-            team_type: Type of teams involved, such as national, international, or club.
+            gender: Specifies whether the match was played by which gender [male, female].
+            match_type: Type of match, possible values are [t20, mdm, odi, test, odm, it20].
+            team_type: Type of teams involved, possible values are [international, club]
             teams: Names of the teams participating in the match.
             toss_winner: Team that won the toss.
             toss_decision: Toss winner's decision—whether to bat or bowl first.
             venue: Location where the match was played.
             city: City in which the venue is located.
             match_name: Name or title of the match.
-            season: Season (year) in which the match was played.
+            season: Season (year) in which the match was played, values are like 2023, 2023/24, 2022, 2022/23 etc
             match_referees: Names of the match referees.
+            match_stage: stage of the match in tournament possible values are[final, semi final, 3rd place play-off, qualifier 1 qualifier 2, eliminator, knockout]
             reserve_umpires: Names of reserve umpires.
             tv_umpires: Names of TV umpires.
             umpires: Names of on-field umpires.
             winner: The team that won the match.
+            winner_method: how the winner was decided possible value [d/l]
             winner_wickets: Number of wickets remaining when the winner achieved victory.
             winner_runs: Number of runs by which the winner won.
             total_overs: Total overs bowled in the match.
@@ -47,6 +49,8 @@ def get_table_info_text():
             balls_per_over: Number of balls in an over (e.g., 6 for standard cricket).
             target_runs: Target runs set for the chasing team.
             target_overs: Target overs set for the chasing team (if applicable).
+            outcome: possible values [tie, draw, no result], if there is no winner
+            venue: venue where match is played
 
         Innings and Ball-Level Information:
 
@@ -62,15 +66,26 @@ def get_table_info_text():
             runs_batter: Runs scored by the batsman on the given ball (not the total match score).
             runs_extras: Extra runs on the given ball (e.g., wides, no-balls).
             runs_total: Total runs on the given ball, including extras.
+            byes: bye runs for the ball
+            legbyes: legbye runs for the ball
+            powerplay_over: true or false
+            powerplay_type: possible values [mandatory]
+            review_batter: batter who is batting for a review
+            review_by: review is called by which team
+            review_decision: possible values [struck down, upheld]
+            review_type:[wicket]
+            wicket_fielders: fielder who helped the wicket either by catch, run out etc
+            wicket_kind: possible values [caught,run out,bowled,lbw,caught and bowled,stumped,retired hurt]
 
         Notes for Analysis:
         Summations:
 
-            Aggregate ball-level data to generate match-level insights, such as:
-                Total Runs: Calculate the sum of all runs scored (runs_total).
-                Wickets: Count the number of dismissals in the match.
-                Overs: Compute the total overs bowled in the match using over_no and balls_per_over.
-                Example: To determine if a player scored a century in a match, sum up runs_batter at the match_id level.
+            Use cardinality aggregation on ball-level data to derive match-level insights, including:
+                Total Runs: Sum up all runs scored (runs_total).
+                Wickets: Count the total dismissals in the match.
+                Overs: Calculate the total overs bowled in the match based on over_no and balls_per_over.
+                Example: To check if a player scored a century in a match, aggregate runs_batter at the match_id level.
+                Number of Matches: Compute the count of distinct matches.
 
         Search Suggestions:
 
@@ -169,7 +184,7 @@ def get_rephrased_query(query):
     return content
 
 def get_dsl_query(query):
-    query= get_rephrased_query(query)
+    query= get_rephrased_query(query).lower()
     template_string = get_template_string()
     table_info=get_table_info_text()
     response_sample = get_sample_response()
@@ -185,7 +200,10 @@ def get_dsl_query(query):
 
 def get_final_response(es_response,query):
     try:
-        prompt_template = ChatPromptTemplate.from_template("For the user's query, we attempted to extract results by retrieving cricket sheet data from an Elasticsearch database. The query is query - {query} and the corresponding database response data is response_data - {es_response}. If you can provide an answer to the user's query based on the response data, please do so. Otherwise, reply with `I dont know.`")
+        prompt_template = ChatPromptTemplate.from_template("""For the user's query, we attempted to retrieve relevant results from cricket sheet data. 
+        The query is query - {query}, and the corresponding response data is response_data - {es_response}. 
+        If you can provide an answer to the user's query based on the response data please do so, focus solely on the facts and avoid mentioning Elasticsearch, json, dict etc. 
+        If the response data does not contain the required information, reply with `I don't know.` """)
         question = prompt_template.format_messages(
                             query=query,
                             es_response=es_response)
