@@ -94,6 +94,8 @@ def get_table_info_text():
                 Examples:
                     Use *kohli* instead of virat kohli.
                     Use *dhoni* instead of MS Dhoni.
+                    Use *tendulkar* instead of sachin tendulkar
+                    Use *rohit sharma* for rohit sharma
 
         Note for Output:
 
@@ -194,16 +196,29 @@ def get_dsl_query(query):
                         table_info=table_info,
                         response1=response_sample)
     query_response = chat(question)
-    resp_dict =extract_json_dict(query_response.content)
+    resp_dict =extract_json_dict(query_response.content.lower())
     return resp_dict
 
 
 def get_final_response(es_response,query):
     try:
-        prompt_template = ChatPromptTemplate.from_template("""For the user's query, we attempted to retrieve relevant results from cricket sheet data. 
-        The query is query - {query}, and the corresponding response data is response_data - {es_response}. 
-        If you can provide an answer to the user's query based on the response data please do so, focus solely on the facts and avoid mentioning Elasticsearch, json, dict etc. 
-        If the response data does not contain the required information, reply with `I don't know.` """)
+        prompt_template = ChatPromptTemplate.from_template("""For the user's query, we attempted to retrieve relevant results from cricket sheet data.
+
+                The query is query - {query}, and the corresponding response data is provided as:
+
+                {es_response}  
+
+            Instructions:
+
+                For Non-Cricket small talk:
+                    If the query is conversational, such as "Hi," "How are you?" or "What's the weather today?" respond naturally and appropriately without referencing the cricket data.
+
+                For Cricket-Related Queries:
+                    Analyze the response data provided within the triple backticks ({es_response}) to address the query.
+                    Focus exclusively on the facts derived from the data. Do not mention technical terms like Elasticsearch, JSON, dictionary, etc.
+
+                If No Relevant Information Is Found and is out of cricket context:
+                    If the response data does not contain the information needed to answer the query, reply with `I don't know.`""")
         question = prompt_template.format_messages(
                             query=query,
                             es_response=es_response)
