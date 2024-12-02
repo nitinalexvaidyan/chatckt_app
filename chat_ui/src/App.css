@@ -40,12 +40,12 @@
     font-size: 10px;  /* Smaller font size for compact display */
   }
   .fixed-buttons-container {
-    margin-top: 70vh;
+    margin-top: 80vh;
   }
 }
 
 /* Smaller screens: Adjust padding and font size */
-@media screen and (max-width: 768px) {
+@media screen and (min-width: 480px) and (max-width: 768px) {
   .clear-chat-button {
     padding: .3vw 5vw; /* Increase padding for smaller screens */
     font-size: 14px;  /* Slightly smaller font size */
@@ -56,7 +56,7 @@
 }
 
 /* Larger screens: Adjust for desktops */
-@media screen and (min-width: 1024px) {
+@media screen and (min-width: 768px){
   .clear-chat-button {
     padding: 0.8vw 2vw; /* Slightly smaller padding for larger screens */
     font-size: 18px;    /* Larger font size for better readability */
