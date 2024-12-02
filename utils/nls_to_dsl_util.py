@@ -202,7 +202,7 @@ def get_final_response(es_response,query):
         prompt_template = ChatPromptTemplate.from_template("""For the user's query, we attempted to retrieve relevant results from cricket sheet data. 
         The query is query - {query}, and the corresponding response data is response_data - {es_response}. 
         If you can provide an answer to the user's query based on the response data please do so, focus solely on the facts and avoid mentioning Elasticsearch, json, dict etc. 
-        If the response data does not contain the required information, reply with "I don't know."""")
+        If the response data does not contain the required information, reply with "I don't know.""")
         question = prompt_template.format_messages(
                             query=query,
                             es_response=es_response)
