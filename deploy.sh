@@ -22,6 +22,7 @@ else
     cd $APP_DIR
 fi
 
+git pull
 # Fetch the public IP
 PUBLIC_IP=$(curl -s ifconfig.me)
 
