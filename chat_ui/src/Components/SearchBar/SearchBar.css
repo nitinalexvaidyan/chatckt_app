@@ -11,7 +11,7 @@
   /* Search form styling */
   .search-bar-form {
     display: flex;
-    width: 90vw;
+    width: 80vw;
     max-width: 800px;
     border: 1px solid #2d2d2d;
     border-radius: 25px;
@@ -30,7 +30,7 @@
   
   /* Search button */
   .search-bar-button {
-    background-color: #474646;
+    background-color: #ffffff;
     border: none;
     padding: 0 1.2rem;
     cursor: pointer;
@@ -41,7 +41,7 @@
   }
   
   .search-bar-button:hover {
-    background-color: #2b2a2a;
+    background-color: #b5b1b1;
   }
 
   
