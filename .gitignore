@@ -1,5 +1,6 @@
 /venv/
 /batch_jobs/data_load/t20s_json
+__pycache__
 
 # dependencies
 node_modules
