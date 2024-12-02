@@ -3,7 +3,8 @@ import axios from "axios";
 import { SearchBar, ChatMessages } from "./Components";
 import './App.css';
 
-const BACKEND_API_URL = "http://3.80.153.168:5000/query";
+const BACKEND_API_URL = process.env.REACT_APP_BACKEND_API_URL;
+// const BACKEND_API_URL = "http://3.80.153.168:5000/query";
 
 function App() {
   const [messages, setMessages] = useState([]); // State to store chat messages

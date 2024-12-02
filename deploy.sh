@@ -22,10 +22,18 @@ else
     cd $APP_DIR
 fi
 
+# Fetch the public IP
+PUBLIC_IP=$(curl -s ifconfig.me)
+
+# Update the .env file
+echo "REACT_APP_BACKEND_API_URL=http://$PUBLIC_IP:5000/query" > .env
+
+
 # Activate Python virtual environment
 if [ -f "$VENV_DIR" ]; then
     echo "Activating Python virtual environment..."
     source $VENV_DIR
+    export OPENAI_API_KEY='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'
 else
     echo "Python virtual environment not found at $VENV_DIR. Exiting."
     exit 1
