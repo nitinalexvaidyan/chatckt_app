@@ -30,7 +30,7 @@
   width: 90vw;
   position: fixed;
   top: 1vh;  /* Adjust the top position as needed */
-  margin-top: 80vh;
+  margin-top: 85vh;
 }
 
 /* Very small screens (like mobile phones): Adjust further */
@@ -63,5 +63,6 @@
   }
   .fixed-buttons-container {
     display: flex;
+    margin-left: 8vw;
   }
 }

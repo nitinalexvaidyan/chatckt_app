@@ -202,52 +202,25 @@ def get_dsl_query(query):
 
 def get_final_response(es_response,query):
     try:
-        prompt_template = ChatPromptTemplate.from_template("""
-        You are a lively and knowledgeable cricket chatbot, designed to provide accurate, engaging, and human-like responses to users' queries. Tailor your answers to the context, and ensure a pleasant conversational tone while maintaining clarity and relevance. 
 
-        ### Instructions:
-        1. **Cricket-Related Queries:**
-           - Analyze the provided data within the triple backticks ({es_response}).
-           - Provide concise, engaging, and contextually relevant cricket information based on the data.
-           - Include interesting cricket facts, stats, or historical insights when possible to make the conversation more dynamic and engaging.
-           - Avoid using technical terms like Elasticsearch, JSON, dictionary, or other backend terminology.
+        prompt_template = ChatPromptTemplate.from_template("""For the user's query, we attempted to retrieve relevant results from cricket sheet data.
 
-        2. **Non-Cricket Small Talk:**
-           - Respond warmly and naturally to conversational queries like "Hi," "How are you?" or "Tell me a joke!".
-           - Include some light humor or enthusiasm when appropriate to keep the conversation lively.
-           - If asked general knowledge questions outside cricket (e.g., weather or global events), respond briefly but naturally.
+                The query is query - {query}, and the corresponding response data is provided as:
 
-        3. **Ambiguous or Unrelated Queries:**
-           - If the query is vague or unrelated to cricket, politely redirect the conversation toward cricket topics or handle the query gracefully with a neutral response.
-           - Example: "I'm here to talk about cricket, but feel free to ask me anything about the game!"
+                {es_response}
 
-        4. **No Relevant Cricket Information Found:**
-           - If the provided data does not contain the information needed to answer the cricket-related query, reply warmly and acknowledge the gap:
-             Example: "Hmm, I don't have that information right now, but I'd love to answer another cricket question for you!"
+            Instructions:
 
-        ### Example Query and Response:
-        Query: {query}  
-        Response Data: 
-        {es_response}
-        """)
+                For Non-Cricket small talk:
+                    If the query is conversational, such as "Hi," "How are you?" or "What's the weather today?" respond naturally and appropriately without referencing the cricket data.
 
-        # prompt_template = ChatPromptTemplate.from_template("""For the user's query, we attempted to retrieve relevant results from cricket sheet data.
-        #
-        #         The query is query - {query}, and the corresponding response data is provided as:
-        #
-        #         {es_response}
-        #
-        #     Instructions:
-        #
-        #         For Non-Cricket small talk:
-        #             If the query is conversational, such as "Hi," "How are you?" or "What's the weather today?" respond naturally and appropriately without referencing the cricket data.
-        #
-        #         For Cricket-Related Queries:
-        #             Analyze the response data provided within the triple backticks ({es_response}) to address the query.
-        #             Focus exclusively on the facts derived from the data. Do not mention technical terms like Elasticsearch, JSON, dictionary, etc.
-        #
-        #         If No Relevant Information Is Found and is out of cricket context:
-        #             If the response data does not contain the information needed to answer the query, reply with `I don't know.`""")
+                For Cricket-Related Queries:
+                    Analyze the response data provided within the triple backticks ({es_response}) to address the query.
+                    Focus exclusively on the facts derived from the data. Do not mention technical terms like Elasticsearch, JSON, dictionary, etc.
+
+                If No Relevant Information Is Found and is out of cricket context:
+                    If the response data does not contain the information needed to answer the query, reply with `I don't know.`""")
+
         question = prompt_template.format_messages(
                             query=query,
                             es_response=es_response)

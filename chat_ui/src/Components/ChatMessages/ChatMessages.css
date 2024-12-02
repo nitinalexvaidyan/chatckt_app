@@ -9,40 +9,46 @@
   border: none;
   display: flex;
   flex-direction: column;
-  margin-bottom: 10vh;
+  margin-bottom: 15vh;
+  padding: 10px;
 }
 
-/* Styling the scrollbar */
+/* Hide the scrollbar by default */
 .chat-messages-container::-webkit-scrollbar {
-  width: 8px;
-  /* Width of the scrollbar */
+  width: 8px; /* Adjust scrollbar width */
+  transition: opacity 0.3s ease; /* Smooth transition */
+  opacity: 0; /* Initially hidden */
 }
 
+.chat-messages-container:hover::-webkit-scrollbar {
+  opacity: 1; /* Visible on hover */
+}
+
+/* Scrollbar track */
 .chat-messages-container::-webkit-scrollbar-track {
   background: rgb(50, 50, 50);
-  /* Background color of the scrollbar track */
   border-radius: 4px;
 }
 
+/* Scrollbar thumb */
 .chat-messages-container::-webkit-scrollbar-thumb {
   background: rgb(100, 100, 100);
-  /* Color of the scrollbar slider */
   border-radius: 4px;
   border: 1px solid rgb(34, 34, 34);
-  /* Optional: border to blend with container */
 }
 
 .chat-messages-container::-webkit-scrollbar-thumb:hover {
   background: rgb(120, 120, 120);
-  /* Color when hovering */
 }
 
-/* For Firefox */
+/* For Firefox, hide scrollbar by default */
 .chat-messages-container {
-  scrollbar-width: thin;
-  /* Makes scrollbar thinner */
-  scrollbar-color: rgb(100, 100, 100) rgb(50, 50, 50);
-  /* Slider and track colors */
+  scrollbar-width: thin; /* For when visible */
+  scrollbar-color: rgb(100, 100, 100) rgb(50, 50, 50); /* Colors */
+}
+
+.chat-messages-container:hover {
+  scrollbar-width: thin; /* Show when hovered */
 }
 
 
