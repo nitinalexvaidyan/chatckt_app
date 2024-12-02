@@ -80,11 +80,12 @@ def get_table_info_text():
         Notes for Analysis:
         Summations:
 
-            Aggregate ball-level data to generate match-level insights, such as:
-                Total Runs: Calculate the sum of all runs scored (runs_total).
-                Wickets: Count the number of dismissals in the match.
-                Overs: Compute the total overs bowled in the match using over_no and balls_per_over.
-                Example: To determine if a player scored a century in a match, sum up runs_batter at the match_id level.
+            Use cardinality aggregation on ball-level data to derive match-level insights, including:
+                Total Runs: Sum up all runs scored (runs_total).
+                Wickets: Count the total dismissals in the match.
+                Overs: Calculate the total overs bowled in the match based on over_no and balls_per_over.
+                Example: To check if a player scored a century in a match, aggregate runs_batter at the match_id level.
+                Number of Matches: Compute the count of distinct matches.
 
         Search Suggestions:
 
@@ -202,7 +203,7 @@ def get_final_response(es_response,query):
         prompt_template = ChatPromptTemplate.from_template("""For the user's query, we attempted to retrieve relevant results from cricket sheet data. 
         The query is query - {query}, and the corresponding response data is response_data - {es_response}. 
         If you can provide an answer to the user's query based on the response data please do so, focus solely on the facts and avoid mentioning Elasticsearch, json, dict etc. 
-        If the response data does not contain the required information, reply with "I don't know.""")
+        If the response data does not contain the required information, reply with `I don't know.` """)
         question = prompt_template.format_messages(
                             query=query,
                             es_response=es_response)
