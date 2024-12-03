@@ -114,6 +114,7 @@
 @media screen and (max-width: 768px) {
   .chat-messages-container{
     width: 90vw;
+    margin-bottom: 30vh;
   }
 }
 
