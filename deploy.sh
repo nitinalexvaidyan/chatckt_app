@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # ----------------- Configuration ----------------- #
-OPENAI_API_KEY='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'
 APP_NAME_REACT="chatckt_ui"        # PM2 process name for React app
 APP_NAME_FLASK="chatckt_api"       # PM2 process name for Flask app
 APP_DIR="/home/ubuntu/chatckt_app" # Deployment directory
@@ -15,6 +14,7 @@ git pull
 
 # Activate virtual environment
 source "$VENV_DIR/activate"
+export OPENAI_API_KEY='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'
 
 # Get public IP for setting up the backend API URL
 PUBLIC_IP=$(curl -s ifconfig.me)
