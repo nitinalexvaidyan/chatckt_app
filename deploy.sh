@@ -19,7 +19,7 @@ export OPENAI_API_KEY='sk-proj-9Ir0XM5ErG2ES1ka8e2uA72zQ2k3NiO8STzfLcNHhdCd3ODQ3
 # Get public IP for setting up the backend API URL
 PUBLIC_IP=$(curl -s ifconfig.me)
 echo "Setting backend API URL with public IP: $PUBLIC_IP"
-echo "REACT_APP_BACKEND_API_URL=http://$PUBLIC_IP:5000/query" > .env
+echo "REACT_APP_BACKEND_API_URL=http://'$PUBLIC_IP':5000/query" > .env
 
 # ----------------- Flask Application Setup ----------------- #
 cd "$FLASK_DIR"
