@@ -30,6 +30,7 @@ if pm2 list | grep -q "$APP_NAME_FLASK"; then
 else
     echo "Starting Flask application..."
     pm2 start python3 --name "$APP_NAME_FLASK" -- app.py
+#    pm2 start python3 --name "chatckt_api" -- app.py
 fi
 
 # ----------------- React Application Setup ----------------- #
