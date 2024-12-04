@@ -6,7 +6,6 @@ import json
 import re
 
 
-
 llm_model='gpt-4o-mini'
 api_key=os.getenv('OPENAI_API_KEY')
 client = OpenAI(api_key=api_key)
@@ -170,8 +169,6 @@ def get_table_info_text():
 
         This structure ensures efficient querying and aggregation for cricket analytics."""
     return table_info
-
-
 def get_template_string():
     template_string = """Generate a query for an Elasticsearch database based on the query enclosed within triple backticks, using the provided table information: {table_info}. 
                     Query: ```{query}```. 
@@ -179,7 +176,6 @@ def get_template_string():
                     ``{response1}``
                     """
     return template_string
-
 def get_sample_response(query):
     response_default = {
             "size": 0,
@@ -635,8 +631,399 @@ def get_sample_response(query):
     except:
         question_no = 0
     return response.get(question_no, response_default)
+def check_pre_defined_query(query):
+    response = {
+    1: {
+        "size": 0,
+        "query": {
+            "range": {
+                "dates": {
+                    "gte": "2014-01-01",
+                    "lte": "2023-12-31"
+                }
+            }
+        },
+        "aggs": {
+            "day_of_week": {
+                "terms": {
+                    "script": "doc['dates'].value.dayOfWeekEnum.toString()",
+                    "size": 7
+                },
+                "aggs": {
+                    "centuries_per_match": {
+                        "terms": {
+                            "field": "match_id",
+                            "size": 20000
+                        },
+                        "aggs": {
+                            "total_runs": {
+                                "sum": {
+                                    "field": "runs_batter"
+                                }
+                            },
+                            "century_filter": {
+                                "bucket_selector": {
+                                    "buckets_path": {
+                                        "runs": "total_runs"
+                                    },
+                                    "script": "params.runs >= 100"
+                                }
+                            }
+                        }
+                    },
+                    "num_of_centuries": {
+                        "bucket_script": {
+                            "buckets_path": {
+                                "century_count": "centuries_per_match._bucket_count"
+                            },
+                            "script": "params.century_count"
+                        }
+                    },
+                    "sort_buckets": {
+                        "bucket_sort": {
+                            "sort": [
+                                {
+                                    "num_of_centuries": {
+                                        "order": "desc"
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        }
+    },
+    2: {
+        "size": 0,
+        "query": {
+            "bool": {
+                "must": [
+                    {
+                        "range": {
+                            "dates": {
+                                "gte": "2019-12-02",
+                                "lte": "now"
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        "aggs": {
+            "batter_agg": {
+                "terms": {
+                    "field": "batter",
+                    "size": 1
+                },
+                "aggs": {
+                    "matches_agg": {
+                        "terms": {
+                            "field": "match_id",
+                            "size": 20000
+                        },
+                        "aggs": {
+                            "total_runs": {
+                                "sum": {
+                                    "field": "runs_batter"
+                                }
+                            },
+                            "century_filter": {
+                                "bucket_selector": {
+                                    "buckets_path": {
+                                        "runs": "total_runs"
+                                    },
+                                    "script": "params.runs >= 100"
+                                }
+                            }
+                        }
+                    },
+                    "num_of_centuries": {
+                        "bucket_script": {
+                            "buckets_path": {
+                                "match_count": "matches_agg._bucket_count"
+                            },
+                            "script": "params.match_count"
+                        }
+                    },
+                    "sort_buckets": {
+                        "bucket_sort": {
+                            "sort": [
+                                {
+                                    "num_of_centuries": {
+                                        "order": "desc"
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        }
+    },
+    3: {
+        "size": 0,
+        "query": {
+            "bool": {
+                "must": [
+                    {
+                        "term": {
+                            "match_type": "test"
+                        }
+                    },
+                    {
+                        "exists": {
+                            "field": "wicket_kind"
+                        }
+                    }
+                ]
+            }
+        },
+        "aggs": {
+            "most_wickets": {
+                "terms": {
+                    "field": "bowler",
+                    "size": 1,
+                    "order": {
+                        "_count": "desc"
+                    }
+                }
+            }
+        }
+    },
+    4: {
+        "size": 0,
+        "query": {
+            "bool": {
+                "must": [
+                    {
+                        "range": {
+                            "dates": {
+                                "gte": "2019-12-02",
+                                "lte": "now"
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        "aggs": {
+            "batter_agg": {
+                "terms": {
+                    "field": "batter",
+                    "size": 10000
+                },
+                "aggs": {
+                    "total_runs": {
+                        "sum": {
+                            "field": "runs_batter"
+                        }
+                    },
+                    "match_count": {
+                        "cardinality": {
+                            "field": "match_id"
+                        }
+                    },
+                    "batting_average": {
+                        "bucket_script": {
+                            "buckets_path": {
+                                "total": "total_runs",
+                                "matches": "match_count"
+                            },
+                            "script": "params.matches > 0 ? params.total / params.matches : 0"
+                        }
+                    },
+                    "sort_buckets": {
+                        "bucket_sort": {
+                            "sort": [
+                                {
+                                    "batting_average": {
+                                        "order": "desc"
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        }
+    },
+    5: {
+        "size": 0,
+        "query": {
+            "bool": {
+                "must": [
+                    {
+                        "term": {
+                            "gender": "male"
+                        }
+                    }
+                ]
+            }
+        },
+        "aggs": {
+            "friday_matches_count": {
+                "filter": {
+                    "script": {
+                        "script": {
+                            "source": "doc['dates'].value.dayOfWeek == 5"
+                        }
+                    }
+                },
+                "aggs": {
+                    "unique_matches": {
+                        "cardinality": {
+                            "field": "match_id"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    6: {
+        "size": 0,
+        "query": {
+            "bool": {
+                "must": [
+                    {
+                        "term": {
+                            "batting_team": "india"
+                        }
+                    },
+                    {
+                        "term": {
+                            "match_type": "odi"
+                        }
+                    }
+                ]
+            }
+        },
+        "aggs": {
+            "batter_agg": {
+                "terms": {
+                    "field": "batter",
+                    "size": 1
+                },
+                "aggs": {
+                    "matches_agg": {
+                        "terms": {
+                            "field": "match_id",
+                            "size": 20000
+                        },
+                        "aggs": {
+                            "total_runs": {
+                                "sum": {
+                                    "field": "runs_batter"
+                                }
+                            },
+                            "century_filter": {
+                                "bucket_selector": {
+                                    "buckets_path": {
+                                        "runs": "total_runs"
+                                    },
+                                    "script": "params.runs >= 100"
+                                }
+                            }
+                        }
+                    },
+                    "num_of_centuries": {
+                        "bucket_script": {
+                            "buckets_path": {
+                                "match_count": "matches_agg._bucket_count"
+                            },
+                            "script": "params.match_count"
+                        }
+                    },
+                    "sort_buckets": {
+                        "bucket_sort": {
+                            "sort": [
+                                {
+                                    "num_of_centuries": {
+                                        "order": "desc"
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        }
+    },
+    7: {
+        "size": 0,
+        "query": {
+            "bool": {
+                "must": [
+                    {
+                        "term": {
+                            "over_no": {
+                                "value": 1
+                            }
+                        }
+                    },
+                    {
+                        "term": {
+                            "ball_no": {
+                                "value": 1
+                            }
+                        }
+                    },
+                    {
+                        "range": {
+                            "runs_extras": {
+                                "gte": 1
+                            }
+                        }
+                    },
+                    {
+                        "term": {
+                            "innings_number": {
+                                "value": 1
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        "aggs": {
+            "match_count": {
+                "cardinality": {
+                    "field": "match_id"
+                }
+            }
+        }
+    }
+}
+    question_map = {
+        "Which day of the week has seen the most number of centuries in the last decade?": 1,
+        "Which batter scored the most number of centuries in the past 5 years?": 2,
+        "Who took the most wickets in Test matches?": 3,
+        "Who is the batter with an average above 60 in ODIs?": 4,
+        "How many men's matches were played on Fridays?": 5,
+        "Who scored the most centuries in 2023 from the Indian team?": 6,
+        "How many matches had an extra run on the first ball?": 7
+    }
+    question_number = get_question_number(query, question_map)
+    return response.get(question_number, False)
+def get_question_number(query, question_map):
+    # Remove the trailing question mark, if it exists
+    query = query.strip().rstrip('?')
 
+    # Remove all spaces and normalize the query to lowercase
+    normalized_query = query.replace(" ", "").lower()
 
+    # Iterate through the question_map and match with normalized queries
+    for question, number in question_map.items():
+        # Remove the trailing question mark, if it exists
+        question = question.strip().rstrip('?')
+        # Remove all spaces and normalize the question in the map to lowercase
+        normalized_question = question.replace(" ", "").lower()
+
+        if normalized_query == normalized_question:
+            return number
+
+    # If no match found, return 0
+    return 0
 def extract_json_dict(content):
     response_dict = {"query":{}}
     match=re.search(r"```json(.*)```", content, re.DOTALL)
@@ -663,7 +1050,6 @@ def extract_json_dict(content):
         response_dict["status"]="failed"
         response_dict["actual_response"]=None
     return response_dict
-
 def get_rephrased_query(query):
     prompt_template = ChatPromptTemplate.from_template("Rephrase the query by replacing any nicknames with the player's actual name in the context of cricket. If no nicknames are present, return the query as it is. - query - {query}")
     question=prompt_template.format_messages(
@@ -708,18 +1094,26 @@ def fix_es_query(query):
             content = query
     return content
 def get_dsl_query(query):
-    query= get_rephrased_query(query).lower()
-    template_string = get_template_string()
-    table_info=get_table_info_text()
-    response_sample = get_sample_response(query)
-    prompt_template = ChatPromptTemplate.from_template(template_string)
-    question = prompt_template.format_messages(
-                        query=query,
-                        table_info=table_info,
-                        response1=response_sample)
-    query_response = chat(question)
-    resp_dict = extract_json_dict(query_response.content.lower())
-    return resp_dict
+    pre_defined_query = check_pre_defined_query(query)
+    if (pre_defined_query):
+
+        return {
+            "query": json.dumps(pre_defined_query, indent=4),
+            "status": "success"
+                }
+    else:
+        query= get_rephrased_query(query).lower()
+        template_string = get_template_string()
+        table_info=get_table_info_text()
+        response_sample = get_sample_response(query)
+        prompt_template = ChatPromptTemplate.from_template(template_string)
+        question = prompt_template.format_messages(
+                            query=query,
+                            table_info=table_info,
+                            response1=response_sample)
+        query_response = chat(question)
+        resp_dict = extract_json_dict(query_response.content.lower())
+        return resp_dict
 
 
 def get_final_response(es_response,query):
@@ -753,4 +1147,4 @@ def get_final_response(es_response,query):
     return resp
 
 
-get_dsl_query("How many matches had an extra run on the first ball?")
+get_dsl_query("Which batter scored the most number of centuries in the past 5 yearss?")
