@@ -164,15 +164,20 @@ def get_table_info_text():
         Note for Output:
 
             Provide step-by-step instructions to construct the query.
+            Ensure the query optimizes performance by limiting the size of aggregations.
+            example: if top is mentioned in query size of aggregations = 1.
             For each step, ensure that the provided instructions are followed without any violations.
-            Conclude with a single, complete dsl_query.
+            Conclude with a single, complete elastic search query.
 
         This structure ensures efficient querying and aggregation for cricket analytics."""
     return table_info
 def get_template_string():
     template_string = """Generate a query for an Elasticsearch database based on the query enclosed within triple backticks, using the provided table information: {table_info}. 
                     Query: ```{query}```. 
-                    For instance, if the query is "how many runs did captain cool score on 2023" the response should only include the corresponding JSON structure, formatted as shown in the example below:
+                    For instance, if the query is "how many runs did captain cool score on 2023" the response should only include the corresponding 
+                     use this query sample for response creation ``{response1}``
+                     The final result should limit the number of aggs size  for performance optimization."
+                    JSON structure, formatted as shown in the example below:
                     ``{response1}``
                     """
     return template_string
@@ -1147,4 +1152,4 @@ def get_final_response(es_response,query):
     return resp
 
 
-get_dsl_query("Which batter scored the most number of centuries in the past 5 yearss?")
+# get_dsl_query("Which batter scored the most number of centuries in the past 6 years?")
